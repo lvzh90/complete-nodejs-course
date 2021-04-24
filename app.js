@@ -1,12 +1,14 @@
-const fs = require('fs');
+function getCommandsBuilder(command) {
 
-const writeFile = fs.createWriteStream('notes.txt');
-writeFile.write('Te chelo SS \n');
-writeFile.write('<3');
-writeFile.end();
+    const commandMatch = {
+        add: () => console.log('Adding note'),
+        remove: () => console.log('Removing note'),
+        edit: () => console.log('Editing note'),
+        default: () => console.log('Command no supported'),
+    }
 
-fs.appendFile('notes.txt', '\nFor ever', (err) => {
-    if (err) throw err;
+    return (commandMatch[command] || commandMatch['default']);
+}
 
-    console.log('The data was appended.')
-})
+const command = getCommandsBuilder(process.argv[2]);
+command();
