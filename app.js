@@ -1,5 +1,6 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { getNotes, addNotes } = require('./notes.js')
 
 yargs(process.argv.slice(2))
 .command('add', 'Add a note', 
@@ -16,8 +17,7 @@ yargs(process.argv.slice(2))
     })
 }, 
 (argv) => {
-    console.log('\nTitle: ', argv.title)
-    console.log('\nBody: ', argv.body)
+    addNotes(argv.title,  argv.body)
 })
 .argv
 
