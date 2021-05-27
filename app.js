@@ -1,10 +1,23 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { argv } = require('yargs');
 
 yargs(process.argv.slice(2))
-.command('add', 'Add a note', (yargs) => {
-    console.log('Adding note', yargs)
+.command('add', 'Add a note', 
+(yargs) => {
+    yargs.option('title', {
+        describe: 'Note title',
+        demandOption: true,
+        type: 'string'
+    })
+    yargs.option('body', {
+        describe: 'Note body',
+        demandOption: true,
+        type: 'string'
+    })
+}, 
+(argv) => {
+    console.log('\nTitle: ', argv.title)
+    console.log('\nBody: ', argv.body)
 })
 .argv
 
