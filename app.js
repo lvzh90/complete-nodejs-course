@@ -1,6 +1,7 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { getNotes, addNotes } = require('./notes.js')
+const { getNotes, addNotes, removeNote } = require('./notes.js');
+const { argv } = require('yargs');
 
 yargs(process.argv.slice(2))
 .command('add', 'Add a note', 
@@ -22,8 +23,16 @@ yargs(process.argv.slice(2))
 .argv
 
 yargs(hideBin(process.argv))
-.command('remove', 'Remove a note', (yargs) => {
-    console.log('Removing note')
+.command('remove', 'Remove a note',
+(yargs) => {
+    yargs.option('title', {
+        describe: 'Note title',
+        demandOption: true,
+        type: 'string'
+    })
+},
+(argv) => {
+    removeNote(argv.title)
 })
 .parse()
 
