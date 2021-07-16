@@ -38,12 +38,7 @@ function removeNote(title) {
 
 function findNote(title) {
     const notes = loadNotes()
-
-    const note = notes.filter(function(note) {
-        return note.title === title
-    })
-
-    return note
+    return notes.filter(note => note.title === title)
 }
 
 function saveNotes(notes) {
