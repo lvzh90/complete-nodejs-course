@@ -1,6 +1,6 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { getNotes, addNotes, removeNote, listNotes } = require('./notes.js');
+const { getNotes, addNotes, removeNote, listNotes, readNote } = require('./notes.js');
 const { argv } = require('yargs');
 const notes = require('./notes.js');
 
@@ -50,7 +50,15 @@ yargs(hideBin(process.argv))
 .parse()
 
 yargs(hideBin(process.argv))
-.command('read', 'Reading a note', (yargs) => {
-    console.log('Reading note')
+.command('read', 'Reading a note', 
+(yargs) => {
+    yargs.option('title', {
+        describe: 'Note title',
+        demandOption: true,
+        type: 'string'
+    })
+},
+(argv) => {
+    readNote(argv.title)
 })
 .parse()
