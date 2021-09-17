@@ -5,21 +5,16 @@ const forescat = (latitude, longitude, callback) => {
     + 'query=' + latitude + ',' + longitude
     + '&units=f';
 
-    request({url: url, json: true}, (error, response) => {
+    request({url, json: true}, (error, { body }) => {
         if (error) {
-            callback(`Unable to connect to weather service. ${error}`, undefined);
-            return;
+            return callback(`Unable to connect to weather service. ${error}`, undefined);
         }
         
-        if (response.body.error) {
-            callback(response.body.error, undefined);
-            return;
+        if (body.error) {
+            return callback(body.error, undefined);
         }
 
-        const current =  response.body.current;
-        const weatherDescription = current.weather_descriptions;
-        const temperature = current.temperature;
-        const feelslike = current.feelslike;
+        const { weather_descriptions: weatherDescription, temperature, feelslike } =  body.current;
         const msg = `${weatherDescription[0]}. It's currently ${temperature} degrees out. It feels like ${feelslike} degrees out.`;
         callback(undefined, msg)
     })

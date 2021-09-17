@@ -5,22 +5,20 @@ const geocode = (address, callback) => {
                 + encodeURIComponent(address)
                 + '.json?access_token=pk.eyJ1IjoibGluZGF6YXBhdGEiLCJhIjoiY2t0ZGs5dnAyMGdkZDJvcGg4dWo0dnNoNSJ9.vbiL_O1HoFHnUP36Tij_JQ';
     
-    request({url: url, json: true}, (error, response) => {
+    request({url, json: true}, (error, { body }) => {
         if (error) {
-            callback(`Unable to connect to location service. ${error}`, undefined);
-            return;
-        }
-        
-        if (response.body.features.length === 0) {
-            callback(`Unable to find location. Try another search. ${response.body}`, undefined);
-            return;
+            return callback(`Unable to connect to location service. ${error}`, undefined);
         }
 
-        const feature = response.body.features[0];
+        if (body.message === 'Not Found' || body.features.length === 0) {
+            return callback(`Unable to find location. Try another search. ${body}`, undefined);
+        }
+
+        const { center, place_name: location } = body.features[0];
         callback(undefined, {
-            latitude: feature.center[1],
-            longitude: feature.center[0],
-            location: feature.place_name
+            latitude: center[1],
+            longitude: center[0],
+            location
         })
     })
 }
