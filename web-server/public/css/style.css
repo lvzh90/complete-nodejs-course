@@ -5,3 +5,14 @@ h1 {
 img {
     width: 250px;
 }
+
+p.errorCode {
+    text-align: center;
+    color: deeppink;
+    font-size: 200%;
+}
+
+p.errorMessage {
+    text-align: center;
+}
+
