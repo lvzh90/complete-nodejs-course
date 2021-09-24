@@ -3,13 +3,18 @@
 <html>
 
     <head>
+        <title>404</title>
+        <link rel="icon" href="/img/weather.png">
         <link rel="stylesheet" href="/css/style.css">
     </head>
 
     <body>
-        {{>header}}
-        <p class="errorCode">404 page</p>
-        <p class="errorMessage">{{errorMessage}}</p>
+        <div class="main-content">
+             {{>header}}
+            <p class="errorCode">404 page</p>
+            <p class="errorMessage">{{errorMessage}}</p>
+        </div>
+       
         {{>footer}}
     </body>
     
