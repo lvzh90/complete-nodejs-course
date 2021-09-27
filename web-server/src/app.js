@@ -2,6 +2,12 @@ const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
 
+const indexRouter = require('./routers/index');
+const weatherRouter = require('./routers/weather');
+const aboutRouter = require('./routers/about');
+const helpRouter = require('./routers/help');
+const errorRouter = require('./routers/404');
+
 const app = express();
 
 // Define paths for Express config
@@ -17,50 +23,11 @@ hbs.registerPartials(partialsPath);
 // Setup static directory to server
 app.use(express.static(publicDirectoryPath));
 
-app.get('', (req, res) => {
-    res.render('index', {
-        title: 'Weather',
-        name: 'Linda Zapata'
-    });
-})
-
-app.get('/about', (req, res) => {
-    res.render('about', {
-        title: 'About Me',
-        name: 'Linda Zapata'
-    });
-})
-
-app.get('/help', (req, res) => {
-    res.render('help', {
-        title: 'Help',
-        helpText: 'This is some helpful text.',
-        name: 'Linda Zapata'
-    });
-})
-
-app.get('/weather', (req, res) => {
-    res.send({
-        forescast: 'It is snowing',
-        location: 'Philadelphia'
-    });
-})
-
-app.get('/help/*', (req, res) => {
-    res.render('404', {
-        title: '404',
-        name: 'Linda Zapata',
-        errorMessage: 'Help article not found'
-    })
-})
-
-app.get('*', (req, res) => {
-    res.render('404', {
-        title: '404',
-        name: 'Linda Zapata',
-        errorMessage: 'Page not found'
-    })
-})
+app.use(indexRouter);
+app.use(weatherRouter);
+app.use(aboutRouter);
+app.use(helpRouter);
+app.use(errorRouter);
 
 app.listen(3000, () => {
     console.log('Server is up on port 3000');
