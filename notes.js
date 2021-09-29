@@ -25,7 +25,8 @@ function addNotes(title, body) {
 
 function removeNote(title) {
     const note = findNote(title)
-    if (note) {
+
+    if (!note) {
         console.log(chalk.red.inverse(`Note '${title}' not found!`))
         return
     }
