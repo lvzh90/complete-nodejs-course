@@ -3,30 +3,25 @@ const geocode = require('../utils/geocode');
 const forecast = require('../utils/forecast');
 const router = new express.Router();
 
-router.get('/weather', (req, res) => {
+router.get('/weather', async (req, res) => {
     if (!req.query.address) {
         return res.send({
             error: 'You must provide an addresss!'
         })
     }
 
-    geocode(req.query.address, (error, {latitude, longitude, location} = {}) => {
-        if (error) {
-            return res.send({ error })
-        }
-
-        forecast(latitude, longitude, (error, forecastData) => {
-            if (error) {
-                return res.send({ error });
-            }
-
-            res.send({
-                forecast: forecastData,
-                location,
-                address: req.query.address
-            })
+    try {
+        const {latitude, longitude, location} = await geocode(req.query.address);
+        const forecastData = await forecast(latitude, longitude);
+        
+        return res.send({
+            forecast: forecastData,
+            location,
+            address: req.query.address
         })
-    })
+    } catch (error) {
+        return res.send({ error: error.message })
+    }
 })
 
 module.exports = router;

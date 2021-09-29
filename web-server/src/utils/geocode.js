@@ -1,26 +1,31 @@
-const request = require('request')
+const request = require('request');
+const fetch = require('node-fetch');
+require('dotenv').config();
 
-const geocode = (address, callback) => {
-    const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' 
-                + encodeURIComponent(address)
-                + '.json?access_token=pk.eyJ1IjoibGluZGF6YXBhdGEiLCJhIjoiY2t0ZGs5dnAyMGdkZDJvcGg4dWo0dnNoNSJ9.vbiL_O1HoFHnUP36Tij_JQ';
-    
-    request({url, json: true}, (error, { body }) => {
-        if (error) {
-            return callback(`Unable to connect to location service. ${error}`, undefined);
+const geocode = async (address) => {
+    const API_URL = process.env.GEOCODE_API_URL;
+    const ACCESS_TOKEN = process.env.GEOCODE_API_ACCESS_TOKEN;
+    const url = `${API_URL}/${encodeURIComponent(address)}.json?access_token=${ACCESS_TOKEN}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.message === 'Not Found' || data.features.length === 0) {
+            throw new Error({message: `Unable to find location. Try another search. ${data}`});
         }
 
-        if (body.message === 'Not Found' || body.features.length === 0) {
-            return callback(`Unable to find location. Try another search. ${body}`, undefined);
-        }
+        const { center, place_name: location } = data.features[0];
 
-        const { center, place_name: location } = body.features[0];
-        callback(undefined, {
+        return {
             latitude: center[1],
             longitude: center[0],
             location
-        })
-    })
+        }
+    } catch(error) {
+        console.error(`Something went wrong with the location service. ${error.message}`);
+        throw error;
+    }
 }
 
 module.exports = geocode

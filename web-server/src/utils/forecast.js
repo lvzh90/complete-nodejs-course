@@ -1,23 +1,27 @@
-const request = require('request')
+const request = require('request');
+const fetch = require('node-fetch');
+require('dotenv').config();
 
-const forescat = (latitude, longitude, callback) => {
-    const url = 'http://api.weatherstack.com/current?access_key=c59a2f758b6643ef821c65d80bc29e21&'
-    + 'query=' + latitude + ',' + longitude
-    + '&units=f';
+const forescat = async (latitude, longitude) => {
+    const API_URL = process.env.WEATHER_API_URL;
+    const ACCESS_KEY = process.env.WEATHER_API_ACCESS_KEY
+    const url = `${API_URL}/current?access_key=${ACCESS_KEY}&query=${latitude},${longitude}&units=f`;
 
-    request({url, json: true}, (error, { body }) => {
-        if (error) {
-            return callback(`Unable to connect to weather service. ${error}`, undefined);
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error({ message: data.error});
         }
-        
-        if (body.error) {
-            return callback(body.error, undefined);
-        }
 
-        const { weather_descriptions: weatherDescription, temperature, feelslike } =  body.current;
-        const msg = `${weatherDescription[0]}. It's currently ${temperature} degrees out. It feels like ${feelslike} degrees out.`;
-        callback(undefined, msg)
-    })
+        const { weather_descriptions: weatherDescription, temperature, feelslike } =  data.current;
+
+        return `${weatherDescription[0]}. It's currently ${temperature} degrees out. It feels like ${feelslike} degrees out.`;
+    } catch(error) {
+        console.error(`Something went wrong with the weather service. ${error.message}`);
+        throw error;
+    }
 }
 
 module.exports = forescat
